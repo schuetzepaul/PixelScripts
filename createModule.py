@@ -7,22 +7,18 @@ import sys, os
 quali = 'FullQualification'
 tbm = 'TBM08b'
 roc = 'digv21respin'
-mod = '00000' #dummy not used anymore
-dtb = 'A' #dummy not used anymore
 
 ###### Define your tests and temperature
 tests = ['Pretest_p17','Fulltest_m20','Cycle','Fulltest_m20','Fulltest_p17','IV_p17']
 #Official sequence, not ours
 #tests = ['Fulltest_m20','Cycle','Fulltest_m20','IV_m20','Fulltest_p17','IV_p17']
-#tests = ['Pretest_p17','Fulltest_p17','Fulltest_m20']
-#tests = ['Pretest_p17','Fulltest_m20']
 temps = ['17','-25']
 ncycles = '10'
 
 #dtb list
 dtbs = {'A':'DTB_WS6C22','B':'DTB_WS913S','C':'DTB_WS6OKA','D':'DTB_WS6K9F'}
 
-print dtbs[dtb]
+
 ts = time.time()
 d = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d')
 dt = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%Hh%Mm')
