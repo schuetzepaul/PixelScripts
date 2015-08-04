@@ -8,7 +8,7 @@ quali = 'FullQualification'
 tbm = 'TBM08b'
 roc = 'digv21respin'
 
-###### Define your tests and temperature
+###### Define your tests and temperature (extended pretest with pixel alive map)
 tests = ['Pretest_p17','Fulltest_m20','Cycle','Fulltest_m20','Fulltest_p17','IV_p17']
 #Official sequence, not ours
 #tests = ['Fulltest_m20','Cycle','Fulltest_m20','IV_m20','Fulltest_p17','IV_p17']
@@ -51,8 +51,8 @@ for mod in modules:
     logF.write(mod + ' ')
     logF.write(modules[mod]+'\n')
 
-for test in tests:
-    logF.write(test)
+for i,test in enumerate(tests):
+    logF.write(str(i) + '  ' + test)
     logF.write(' \n')
 logF.write('\n')
 logF.close()
@@ -62,8 +62,9 @@ folder = 'dummy' + testday + '_' + dt+ '_' + stamp
 cmd = '/home/cmspix/pxar/main/mkConfig -d ' + folder + ' -t ' + tbm + ' -r ' + roc + '  -m'
 print cmd
 os.popen(cmd)
-###########################
 
+##Creat the necessary test structure
+###########################
 FolderList=[]
 
 for mod in modules:
@@ -78,8 +79,6 @@ for mod in modules:
     cmd = 'mkdir -p '+ cfgfolder 
     print cmd
     os.popen(cmd)
-
-
 
     for i,test in enumerate(tests):
         if test == 'Cycle':
@@ -112,13 +111,13 @@ for mod in modules:
         f.close()
 
 ###############
-##TODO define IV curve
+##Make shell scripts for executing all the tests simultanesouly
 for i,test in enumerate(tests):
     fsh = open(testday +'/' +str ( i ).zfill(3)+'_'+test + '_' + stamp + '.sh','w')
     for folder in FolderList:
         #Pretest and Fulltest can be done in parallel
         if 'Pretest' in test:
-            fsh.write('/home/cmspix/pxar/bin/pXar -d '+ folder + '/' + str ( i ).zfill(3) + '_' + test + ' -t pretest & \n')
+            fsh.write('cat /home/cmspix/pxar/main/mPretest | /home/cmspix/pxar/bin/pXar -d '+ folder + '/' + str ( i ).zfill(3) + '_' + test + ' &\n')
         if 'Fulltest' in test:
             fsh.write('cat /home/cmspix/pxar/main/mtest | /home/cmspix/pxar/bin/pXar -d '+ folder + '/' + str ( i ).zfill(3) + '_' + test + ' &\n')
         #IV curve needs to be done sequentially
@@ -128,3 +127,15 @@ for i,test in enumerate(tests):
     cmd = "chmod +x "+testday +'/' +str ( i ).zfill(3)+'_'+test + '_' + stamp + '.sh'
     print cmd
     os.popen(cmd)
+#############################
+
+##################
+## creat script to tar everything in the end
+ftar = open(testday +'/' +str ( i +1).zfill(3)+'_tarFolders_' + stamp + '.sh','w')
+for folder in FolderList:
+    ftar.write('tar cvzf '+ folder +'.tgz '+folder+' \n')
+ftar.close()
+cmd = "chmod +x "+testday +'/'  +str ( i +1 ).zfill(3)+'_tarFolders_' + stamp + '.sh'
+print cmd
+os.popen(cmd)
+###################
