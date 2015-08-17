@@ -5,7 +5,7 @@ import sys, os
 
 ###### name the qualificiation procedure and module settings
 quali = 'FullQualification'
-tbm = 'TBM08b'
+tbm = 'TBM08c'
 roc = 'digv21respin'
 
 ###### Define your tests and temperature (extended pretest with pixel alive map)
