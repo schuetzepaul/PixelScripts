@@ -117,9 +117,11 @@ for i,test in enumerate(tests):
     for folder in FolderList:
         #Pretest and Fulltest can be done in parallel
         if 'Pretest' in test:
-            fsh.write('cat /home/cmspix/pxar/main/mPretest | /home/cmspix/pxar/bin/pXar -d '+ folder + '/' + str ( i ).zfill(3) + '_' + test + ' &\n')
+            #fsh.write('cat /home/cmspix/pxar/main/mPretest | /home/cmspix/pxar/bin/pXar -d '+ folder + '/' + str ( i ).zfill(3) + '_' + test + ' &\n')
+            fsh.write('mate-terminal -e \"/bin/bash -c \'cat /home/cmspix/pxar/main/mPretest | /home/cmspix/pxar/bin/pXar -d '+ folder + '/' + str ( i ).zfill(3) + '_' + test + ';  exec /bin/bash -i\'\" \n')
         if 'Fulltest' in test:
-            fsh.write('cat /home/cmspix/pxar/main/mtest | /home/cmspix/pxar/bin/pXar -d '+ folder + '/' + str ( i ).zfill(3) + '_' + test + ' &\n')
+            fsh.write('mate-terminal -e \"/bin/bash -c \'cat /home/cmspix/pxar/main/mtest | /home/cmspix/pxar/bin/pXar -d '+ folder + '/' + str ( i ).zfill(3) + '_' + test + ';  exec /bin/bash -i\'\" \n')
+            #fsh.write('cat /home/cmspix/pxar/main/mtest | /home/cmspix/pxar/bin/pXar -d '+ folder + '/' + str ( i ).zfill(3) + '_' + test + ' &\n')
         #IV curve needs to be done sequentially
         if 'IV' in test:
             fsh.write('/home/cmspix/pxar/bin/pXar -d '+ folder + '/' + str ( i ).zfill(3) + '_' + test + ' -t IV \n')
