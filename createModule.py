@@ -16,7 +16,9 @@ temps = ['17','-25']
 ncycles = '10'
 
 #dtb list
-dtbs = {'A':'DTB_WS6C22','B':'DTB_WS913S','C':'DTB_WS6OKA','D':'DTB_WS6K9F'}
+#old exchange C
+#dtbs = {'A':'DTB_WS6C22','B':'DTB_WS913S','C':'DTB_WS6OKA','D':'DTB_WS6K9F'}
+dtbs = {'A':'DTB_WS6C22','B':'DTB_WS913S','C':'DTB_WS8ZAW','D':'DTB_WS6K9F'}
 
 
 ts = time.time()
@@ -118,9 +120,9 @@ for i,test in enumerate(tests):
         #Pretest and Fulltest can be done in parallel
         if 'Pretest' in test:
             #fsh.write('cat /home/cmspix/pxar/main/mPretest | /home/cmspix/pxar/bin/pXar -d '+ folder + '/' + str ( i ).zfill(3) + '_' + test + ' &\n')
-            fsh.write('mate-terminal -e \"/bin/bash -c \'cat /home/cmspix/pxar/main/mPretest | /home/cmspix/pxar/bin/pXar -d '+ folder + '/' + str ( i ).zfill(3) + '_' + test + ';  exec /bin/bash -i\'\" \n')
+            fsh.write('mate-terminal --tab --title=\"' + folder + '\" -e \"/bin/bash -c \'cat /home/cmspix/pxar/main/mPretest | /home/cmspix/pxar/bin/pXar -d '+ folder + '/' + str ( i ).zfill(3) + '_' + test + ';  exec /bin/bash -i\'\" \n')
         if 'Fulltest' in test:
-            fsh.write('mate-terminal -e \"/bin/bash -c \'cat /home/cmspix/pxar/main/mtest | /home/cmspix/pxar/bin/pXar -d '+ folder + '/' + str ( i ).zfill(3) + '_' + test + ';  exec /bin/bash -i\'\" \n')
+            fsh.write('mate-terminal --tab --title=\"' + folder + '\" -e \"/bin/bash -c \'cat /home/cmspix/pxar/main/mtest | /home/cmspix/pxar/bin/pXar -d '+ folder + '/' + str ( i ).zfill(3) + '_' + test + ';  exec /bin/bash -i\'\" \n')
             #fsh.write('cat /home/cmspix/pxar/main/mtest | /home/cmspix/pxar/bin/pXar -d '+ folder + '/' + str ( i ).zfill(3) + '_' + test + ' &\n')
         #IV curve needs to be done sequentially
         if 'IV' in test:
