@@ -82,7 +82,7 @@ def BB2(tfile, testName, modName):
     c.SaveAs(outdir + "/" +modName+ "/" + testName+ "_BB2" + postfix)
 
     c = _modmap( thrwidth_rocs , colors, true)
-    pt = _makelabel(testName +" "+ modName + " ThrWidth Distribution")
+    pt = _makelabel(testName +" "+ modName + " BB2 ThrWidth Distribution")
     c.cd()
     pt.Draw()
     c.SaveAs(outdir + "/" +modName+ "/" + testName+ "_BB2_ThrWidth" + postfix)
@@ -138,10 +138,25 @@ def HtmlMod(modName, plots):
     f.write("<title>Quick Module Qualification</title> \n")
     f.write("</head> \n")
     f.write("<body> \n")
-    
-    for plot in plots:
-        f.write('<img src="'+ plot +'" height="400" width="1200"> \n' )
-#        f.write('<iframe src="'+ plot +'"></iframe> \n' )
+
+    pretest =  [  x for x in plots if "000" in x ]
+    fulltest1 =  [  x for x in plots if "001" in x ]
+    fulltest2 =  [  x for x in plots if "003" in x ]
+    f.write("<h1> 000_Pretest_p17</h1> <br>")
+    for plot in pretest:
+        f.write('<a href="'+ plot +'">')
+        f.write('<img src="'+ plot +'" height="200" width="600"> </a> \n' )
+
+    f.write("<h1> 001_Fulltest_m20</h1> <br>")
+    for plot in fulltest1:
+        f.write('<a href="'+ plot +'">')
+        f.write('<img src="'+ plot +'" height="200" width="600"> </a> \n' )
+
+    f.write("<h1> 003_Fulltest_m20</h1> <br>")
+    for plot in fulltest2:
+        f.write('<a href="'+ plot +'">')
+        f.write('<img src="'+ plot +'" height="200" width="600"> </a> \n' )
+
     f.write("</body> \n")
     f.write("</html> \n")
 
@@ -189,6 +204,7 @@ if __name__ == "__main__":
     for mod in modules:
         plots = glob.glob(outdir + "/" + mod +"/*" + postfix)
         plots = [ x.replace(outdir + "/", "") for x in plots ]
+        
         HtmlMod(mod, plots)
 
     HtmlIndex(modules)
