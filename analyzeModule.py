@@ -138,24 +138,31 @@ def HtmlMod(modName, plots):
     f.write("<title>Quick Module Qualification</title> \n")
     f.write("</head> \n")
     f.write("<body> \n")
-
+    width = '800'
+    height = '400'
     pretest =  [  x for x in plots if "000" in x ]
     fulltest1 =  [  x for x in plots if "001" in x ]
     fulltest2 =  [  x for x in plots if "003" in x ]
+    fulltest3 =  [  x for x in plots if "004" in x ]
     f.write("<h1> 000_Pretest_p17</h1> <br>")
     for plot in pretest:
         f.write('<a href="'+ plot +'">')
-        f.write('<img src="'+ plot +'" height="200" width="600"> </a> \n' )
+        f.write('<img src="'+ plot +'" height="'+ height + '" width="'+ width +'"> </a> \n' )
 
     f.write("<h1> 001_Fulltest_m20</h1> <br>")
     for plot in fulltest1:
         f.write('<a href="'+ plot +'">')
-        f.write('<img src="'+ plot +'" height="200" width="600"> </a> \n' )
+        f.write('<img src="'+ plot +'" height="'+ height + '" width="'+ width +'"> </a> \n' )
 
     f.write("<h1> 003_Fulltest_m20</h1> <br>")
     for plot in fulltest2:
         f.write('<a href="'+ plot +'">')
-        f.write('<img src="'+ plot +'" height="200" width="600"> </a> \n' )
+        f.write('<img src="'+ plot +'" height="'+ height + '" width="'+ width +'"> </a> \n' )
+
+    f.write("<h1> 004_Fulltest_p17</h1> <br>")
+    for plot in fulltest3:
+        f.write('<a href="'+ plot +'">')
+        f.write('<img src="'+ plot +'" height="'+ height + '" width="'+ width +'"> </a> \n' )
 
     f.write("</body> \n")
     f.write("</html> \n")
