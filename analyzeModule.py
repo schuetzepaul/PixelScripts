@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 from ROOT import *
-import glob, os
+import glob, os, sys
 from array import array
 
 gROOT.SetBatch(kTRUE) 
-outdir = "Overview"
+outdir = "QuickCheck"
 postfix = ".png"
 
 def _makelabel(text):
@@ -176,13 +176,20 @@ def HtmlIndex(modules):
     f.write("</html> \n")
 
 if __name__ == "__main__":
-    
+
+    if len(sys.argv) > 1:
+        inDir = sys.argv[1]
+    else:
+	print "Will stop, give input Dir"
+        quit()
+
+
     try:
         os.stat(outdir)
     except:
         os.mkdir(outdir)
     modules = []
-    for fileName in glob.glob('./*/*/pxar.root'):
+    for fileName in glob.glob(inDir+'/*/*/pxar.root'):
         
         tfile = TFile(fileName,"READ")
         modName = fileName[fileName.find("M"):fileName.find("M") + 5 ]
