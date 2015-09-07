@@ -3,6 +3,7 @@ from ROOT import *
 import glob, os, sys
 from array import array
 
+
 gROOT.SetBatch(kTRUE) 
 outdir = "QuickCheck"
 postfix = ".png"
@@ -131,6 +132,27 @@ def Trim(tfile, testName, modName):
 
     return c
 
+
+def IVCurve(ivFile,  modName):
+    from array import array
+    V = []
+    A = []
+    for line in ivFile.readlines():
+        if not '#' in line:
+            (Vi, Ai) = line.split("\t")[0:2]
+            V.append(-1 * float(Vi))
+            A.append(-1 * float(Ai)* pow(10,6))
+    x = array("d", V) 
+    y = array("d", A) 
+    g =  TGraph(len(x), x, y)
+    c = TCanvas("bla","bla", 800,600)
+    gPad.SetLogy()
+    g.Draw("ac")
+    g.SetTitle("IV curve")
+    g.GetYaxis().SetTitle("Current in #mu A")
+    g.GetXaxis().SetTitle("Voltage in V")
+    c.SaveAs(outdir + "/" + modName+ "/005_IVcurve" + postfix)
+    return
 def HtmlMod(modName, plots):
     f = open(outdir + "/"+modName + ".html",'w')
     f.write("<html> \n")
@@ -138,12 +160,13 @@ def HtmlMod(modName, plots):
     f.write("<title>Quick Module Qualification</title> \n")
     f.write("</head> \n")
     f.write("<body> \n")
-    width = '800'
-    height = '400'
+    width = '600'
+    height = '200'
     pretest =  [  x for x in plots if "000" in x ]
     fulltest1 =  [  x for x in plots if "001" in x ]
     fulltest2 =  [  x for x in plots if "003" in x ]
     fulltest3 =  [  x for x in plots if "004" in x ]
+    IV =  [  x for x in plots if "005" in x ]
     f.write("<h1> 000_Pretest_p17</h1> <br>")
     for plot in pretest:
         f.write('<a href="'+ plot +'">')
@@ -164,8 +187,14 @@ def HtmlMod(modName, plots):
         f.write('<a href="'+ plot +'">')
         f.write('<img src="'+ plot +'" height="'+ height + '" width="'+ width +'"> </a> \n' )
 
+    f.write("<h1> 005_IVCurve_p17</h1> <br>")
+    for plot in IV:
+        f.write('<a href="'+ plot +'">')
+        f.write('<img src="'+ plot +'" height="300" width="400"> </a> \n' )
+
     f.write("</body> \n")
     f.write("</html> \n")
+
 
 
 def HtmlIndex(modules):
@@ -206,13 +235,16 @@ if __name__ == "__main__":
             os.stat(outdir + "/"+modName)
         except:
             os.mkdir(outdir + "/"+modName)
-
+            
         if not "IV" in fileName:
             PixelAlive(tfile, testName, modName)
             BB2(tfile, testName, modName)
             if "Fulltest" in fileName:
                 Trim(tfile, testName, modName)
-
+        if "IV" in fileName:
+            ivFileName = fileName.replace("pxar.root","ivCurve.log")
+            ivFile = open(ivFileName, 'r')
+            IVCurve(ivFile, modName)
     modules = set(modules)
     plots = []
     for mod in modules:
