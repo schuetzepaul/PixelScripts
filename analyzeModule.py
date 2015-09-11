@@ -133,6 +133,60 @@ def Trim(tfile, testName, modName):
     return c
 
 
+def PhHeighOpt(tfile, testName, modName):
+    PhLow = []
+    PhHigh = []
+    PhLowDist = []
+    PhHighDist = []
+
+    
+    colors=[0]
+    for i in range (0,16):
+        hist = tfile.Get("PhOptimization/PH_mapLowVcal_C"+ str(i) + "_V0")
+        hist.SetMinimum(0)
+        hist.SetMaximum(100)
+        PhLow.append(hist)
+        
+        hist = tfile.Get("PhOptimization/PH_mapHiVcal_C"+ str(i) + "_V0")
+        hist.SetMinimum(150)
+        hist.SetMaximum(255)
+        PhHigh.append(hist)
+
+        hist = tfile.Get("PhOptimization/dist_PH_mapLowVcal_C"+ str(i) + "_V0")
+        PhLowDist.append(hist)
+        
+        hist = tfile.Get("PhOptimization/dist_PH_mapHiVcal_C"+ str(i) + "_V0")
+        PhHighDist.append(hist)
+
+
+    c = _modmap( PhLow, colors)
+    pt = _makelabel(testName +" "+ modName +" PulseHeight map low Vcal Range 0 - 100")
+    c.cd()
+    pt.Draw()
+    c.SaveAs(outdir + "/" + modName+ "/" + testName+ "_PhLow" + postfix)    
+
+    c = _modmap( PhHigh, colors)
+    pt = _makelabel(testName +" "+ modName +" PulseHeight map high Vcal Range 150 - 255")
+    c.cd()
+    pt.Draw()
+    c.SaveAs(outdir + "/" + modName+ "/" + testName+ "_PhHig" + postfix)    
+
+    c = _modmap( PhLowDist, colors)
+    pt = _makelabel(testName +" "+ modName +" PulseHeight Dist low Vcal")
+    c.cd()
+    pt.Draw()
+    c.SaveAs(outdir + "/" + modName+ "/" + testName+ "_PhLowDist" + postfix)
+
+    c = _modmap( PhHighDist, colors)
+    pt = _makelabel(testName +" "+ modName +" PulseHeight Dist high Vcal")
+    c.cd()
+    pt.Draw()
+    c.SaveAs(outdir + "/" + modName+ "/" + testName+ "_PhHigDist" + postfix)        
+
+
+    return c
+
+
 def IVCurve(ivFile,  modName):
     from array import array
     V = []
@@ -162,6 +216,13 @@ def HtmlMod(modName, plots):
     f.write("<body> \n")
     width = '600'
     height = '200'
+#    plots = {}
+#    plots.update( "000_Pretetes_17": [  x for x in plots if "000" in x  })
+    fulltest1 =  [  x for x in plots if "001" in x ]
+    fulltest2 =  [  x for x in plots if "003" in x ]
+    fulltest3 =  [  x for x in plots if "004" in x ]
+    IV =  [  x for x in plots if "005" in x ]
+
     pretest =  [  x for x in plots if "000" in x ]
     fulltest1 =  [  x for x in plots if "001" in x ]
     fulltest2 =  [  x for x in plots if "003" in x ]
@@ -241,6 +302,7 @@ if __name__ == "__main__":
             BB2(tfile, testName, modName)
             if "Fulltest" in fileName:
                 Trim(tfile, testName, modName)
+                PhHeighOpt(tfile, testName, modName)
         if "IV" in fileName:
             ivFileName = fileName.replace("pxar.root","ivCurve.log")
             ivFile = open(ivFileName, 'r')
