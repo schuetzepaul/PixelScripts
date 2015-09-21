@@ -301,6 +301,7 @@ if __name__ == "__main__":
             PixelAlive(tfile, testName, modName)
             BB2(tfile, testName, modName)
             if "Fulltest" in fileName:
+                BB2(tfile, testName, modName)
                 Trim(tfile, testName, modName)
                 PhHeighOpt(tfile, testName, modName)
         if "IV" in fileName:
