@@ -5,7 +5,7 @@ from array import array
 
 
 gROOT.SetBatch(kTRUE) 
-outdir = "QuickCheck"
+outdir = "QuickCheckRetest"
 postfix = ".png"
 
 def _makelabel(text):
@@ -211,7 +211,7 @@ def PhHeighOpt(tfile, testName, modName):
     return c
 
 
-def IVCurve(ivFile,  modName):
+def IVCurve(ivFile,testName,  modName):
     from array import array
     V = []
     A = []
@@ -229,7 +229,7 @@ def IVCurve(ivFile,  modName):
     g.SetTitle("IV curve")
     g.GetYaxis().SetTitle("Current in #mu A")
     g.GetXaxis().SetTitle("Voltage in V")
-    c.SaveAs(outdir + "/" + modName+ "/005_IVcurve" + postfix)
+    c.SaveAs(outdir + "/" + modName+ "/" +testName+"_IVcurve" + postfix)
     return
 def HtmlMod(modName, plots):
     f = open(outdir + "/"+modName + ".html",'w')
@@ -242,16 +242,13 @@ def HtmlMod(modName, plots):
     height = '200'
 #    plots = {}
 #    plots.update( "000_Pretetes_17": [  x for x in plots if "000" in x  })
-    fulltest1 =  [  x for x in plots if "001" in x ]
-    fulltest2 =  [  x for x in plots if "003" in x ]
-    fulltest3 =  [  x for x in plots if "004" in x ]
-    IV =  [  x for x in plots if "005" in x ]
 
     pretest =  [  x for x in plots if "000" in x ]
     fulltest1 =  [  x for x in plots if "001" in x ]
     fulltest2 =  [  x for x in plots if "003" in x ]
-    fulltest3 =  [  x for x in plots if "004" in x ]
-    IV =  [  x for x in plots if "005" in x ]
+    fulltest3 =  [  x for x in plots if ("005_F" in x or "004_F" in x) ]
+    IV_p17 =  [  x for x in plots if "006" in x ]
+    IV_m20 =  [  x for x in plots if "004" in x ]
     f.write("<h1> 000_Pretest_p17</h1> <br>")
     for plot in pretest:
         f.write('<a href="'+ plot +'">')
@@ -272,8 +269,13 @@ def HtmlMod(modName, plots):
         f.write('<a href="'+ plot +'">')
         f.write('<img src="'+ plot +'" height="'+ height + '" width="'+ width +'"> </a> \n' )
 
-    f.write("<h1> 005_IVCurve_p17</h1> <br>")
-    for plot in IV:
+    f.write("<h1> 006_IVCurve_p17</h1> <br>")
+    for plot in IV_p17:
+        f.write('<a href="'+ plot +'">')
+        f.write('<img src="'+ plot +'" height="300" width="400"> </a> \n' )
+
+    f.write("<h1> 003_IVCurve_m17</h1> <br>")
+    for plot in IV_m20:
         f.write('<a href="'+ plot +'">')
         f.write('<img src="'+ plot +'" height="300" width="400"> </a> \n' )
 
@@ -331,9 +333,10 @@ if __name__ == "__main__":
         if "IV" in fileName:
             ivFileName = fileName.replace("pxar.root","ivCurve.log")
             ivFile = open(ivFileName, 'r')
-            IVCurve(ivFile, modName)
+            IVCurve(ivFile, testName,modName)
     modules = set(modules)
     plots = []
+
     for mod in modules:
         plots = glob.glob(outdir + "/" + mod +"/*" + postfix)
         plots = [ x.replace(outdir + "/", "") for x in plots ]
