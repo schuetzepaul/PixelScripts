@@ -41,22 +41,17 @@ def _modmap(rocs, colors, logy=False, distthr=False):
         if distthr:
             roc.SetTitle("ROC "+ str(i)+"    RMS={:.3f}".format(roc.GetRMS()))
 
+
         if (i<8):
             c.cd(8-i)
             if (roc.GetNbinsY() > 1):
-                gPad.SetTheta(-90.00)
-                gPad.SetPhi(0.00)
+                h2 = roc.Clone()
+                for col in range(0, 52):
+                    for row in range(0, 80):
+                        roc.SetBinContent(col+1, row+1, h2.GetBinContent(52-col, 80-row))
         else:
-            #c.cd(24-i)
             c.cd(i+1)
-            if (roc.GetNbinsY() > 1):
-                gPad.SetTheta(90.00)
-                gPad.SetPhi(0.00)
 
-#        c.cd(i+1)
-
-        if logy:
-            gPad.SetLogy()
 
         roc.GetXaxis().SetTickSize(0.00001)
         roc.GetYaxis().SetTickSize(0.00001)
@@ -64,11 +59,24 @@ def _modmap(rocs, colors, logy=False, distthr=False):
         roc.GetXaxis().SetLabelSize(0.08)
         roc.GetYaxis().SetLabelSize(0.05)
 
+        if ((i!=8) & (i!=7)):
+            roc.GetYaxis().SetLabelSize(0.)
 
-        if (roc.GetNbinsY() > 1):
-            roc.Draw("surf2")
-        else:
-            roc.Draw("col")
+        if (i<8):
+            roc.GetXaxis().SetLabelSize(0.0)
+
+
+
+
+#        c.cd(i+1)
+
+        if logy:
+            gPad.SetLogy()
+
+
+
+
+        roc.Draw("col")
 
 
     return c
@@ -274,7 +282,7 @@ def HtmlMod(modName, plots):
         f.write('<a href="'+ plot +'">')
         f.write('<img src="'+ plot +'" height="300" width="400"> </a> \n' )
 
-    f.write("<h1> 003_IVCurve_m17</h1> <br>")
+    f.write("<h1> 003_IVCurve_m20</h1> <br>")
     for plot in IV_m20:
         f.write('<a href="'+ plot +'">')
         f.write('<img src="'+ plot +'" height="300" width="400"> </a> \n' )
@@ -327,7 +335,7 @@ if __name__ == "__main__":
             PixelAlive(tfile, testName, modName)
             BB2(tfile, testName, modName)
             if "Fulltest" in fileName:
-                BB2(tfile, testName, modName)
+                #BB2(tfile, testName, modName)
                 Trim(tfile, testName, modName)
                 PhHeighOpt(tfile, testName, modName)
         if "IV" in fileName:
