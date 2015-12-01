@@ -19,7 +19,7 @@ def _makelabel(text):
     return pt
 
 
-def _modmap(rocs, colors, logy=False):
+def _modmap(rocs, colors, logy=False, distthr=False):
     if len(colors) > 1:
         color = array('i', colors)
         gStyle.SetPalette( 4, color);
@@ -36,18 +36,48 @@ def _modmap(rocs, colors, logy=False):
 
     gStyle.SetOptStat(0)
     for i,roc in enumerate(rocs):
-        roc.SetTitle("ROC "+ str(i))
-        c.cd(i+1)
-        if logy:
-            gPad.SetLogy()
-        
-        roc.Draw("col")
+        if not distthr:
+            roc.SetTitle("ROC "+ str(i))
+        if distthr:
+            roc.SetTitle("ROC "+ str(i)+"    RMS={:.3f}".format(roc.GetRMS()))
+
+
+        if (i<8):
+            c.cd(8-i)
+            if (roc.GetNbinsY() > 1):
+                h2 = roc.Clone()
+                for col in range(0, 52):
+                    for row in range(0, 80):
+                        roc.SetBinContent(col+1, row+1, h2.GetBinContent(52-col, 80-row))
+        else:
+            c.cd(i+1)
+
 
         roc.GetXaxis().SetTickSize(0.00001)
         roc.GetYaxis().SetTickSize(0.00001)
         roc.GetZaxis().SetTickSize(0.00001)
-        roc.GetXaxis().SetLabelSize(0.09)
+        roc.GetXaxis().SetLabelSize(0.08)
         roc.GetYaxis().SetLabelSize(0.05)
+
+        if ((i!=8) & (i!=7)):
+            roc.GetYaxis().SetLabelSize(0.)
+
+        if (i<8):
+            roc.GetXaxis().SetLabelSize(0.0)
+
+
+
+
+#        c.cd(i+1)
+
+        if logy:
+            gPad.SetLogy()
+
+
+
+
+        roc.Draw("col")
+
 
     return c
     
@@ -82,7 +112,7 @@ def BB2(tfile, testName, modName):
     pt.Draw()
     c.SaveAs(outdir + "/" +modName+ "/" + testName+ "_BB2" + postfix)
 
-    c = _modmap( thrwidth_rocs , colors, true)
+    c = _modmap( thrwidth_rocs , colors, True)
     pt = _makelabel(testName +" "+ modName + " BB2 ThrWidth Distribution")
     c.cd()
     pt.Draw()
@@ -104,6 +134,8 @@ def Trim(tfile, testName, modName):
         thrfinal.append(hist)
         
         hist = tfile.Get("Trim/dist_thr_TrimThrFinal_vcal_C"+ str(i) + "_V0")
+        hist.GetXaxis().SetRangeUser(0,60)
+        hist.SetStats(0)
         distthrfinal.append(hist)
 
         hist = tfile.Get("Trim/thr_TrimThr0_vthrcomp_C"+ str(i) + "_V0")
@@ -122,7 +154,7 @@ def Trim(tfile, testName, modName):
     pt.Draw()
     c.SaveAs(outdir + "/" + modName+ "/" + testName+ "_ThrMapFinal" + postfix)
 
-    c = _modmap( distthrfinal , colors, True)
+    c = _modmap( distthrfinal , colors, True, True)
     pt = _makelabel(testName +" "+ modName +" Threshold Dist after Trimming")
     c.cd()
     pt.Draw()
@@ -250,7 +282,7 @@ def HtmlMod(modName, plots):
         f.write('<a href="'+ plot +'">')
         f.write('<img src="'+ plot +'" height="300" width="400"> </a> \n' )
 
-    f.write("<h1> 003_IVCurve_m17</h1> <br>")
+    f.write("<h1> 003_IVCurve_m20</h1> <br>")
     for plot in IV_m20:
         f.write('<a href="'+ plot +'">')
         f.write('<img src="'+ plot +'" height="300" width="400"> </a> \n' )
@@ -303,7 +335,7 @@ if __name__ == "__main__":
             PixelAlive(tfile, testName, modName)
             BB2(tfile, testName, modName)
             if "Fulltest" in fileName:
-                BB2(tfile, testName, modName)
+                #BB2(tfile, testName, modName)
                 Trim(tfile, testName, modName)
                 PhHeighOpt(tfile, testName, modName)
         if "IV" in fileName:
