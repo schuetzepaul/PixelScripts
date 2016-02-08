@@ -346,10 +346,9 @@ if __name__ == "__main__":
     plots = []
 
     for mod in modules:
-        plots = glob.glob(outdir + "/" + mod +"/*" + postfix)
+        plots = sorted(glob.glob(outdir + "/" + mod +"/*" + postfix))
         plots = [ x.replace(outdir + "/", "") for x in plots ]
-        
+
         HtmlMod(mod, plots)
 
     HtmlIndex(modules)
-
