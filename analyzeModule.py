@@ -308,8 +308,12 @@ def HtmlIndex(modules):
 
 if __name__ == "__main__":
 
+    omitted_mod = "bla"
     if len(sys.argv) > 1:
         inDir = sys.argv[1]
+        if len(sys.argv) == 3:
+            omitted_mod = sys.argv[2]
+            print "Will omit module " + omitted_mod
     else:
 	print "Will stop, give input Dir"
         quit()
@@ -324,6 +328,9 @@ if __name__ == "__main__":
         
         tfile = TFile(fileName,"READ")
         modName = fileName[fileName.find("M"):fileName.find("M") + 5 ]
+        if modName == omitted_mod:
+            print "Omit module " + modName
+            continue
         modules.append(modName)
         testName = fileName[ fileName.find("/0") +1 : fileName.find("/pxa")]
         try:
